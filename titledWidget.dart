@@ -4,7 +4,7 @@ class TitledWidget extends StatelessWidget {
   final String text;
   final Widget widget;
   
-  TitledWidget({@required this.text, @required this.widget});
+  TitledWidget([@required this.text, @required this.widget]);
 
   @override
   Widget build(BuildContext context) {
