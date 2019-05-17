@@ -8,12 +8,11 @@ class PollButton extends StatefulWidget {
   final Color colorON, colorOFF;
   final bool right;
   final double elevation;
-
-  bool _btnTrigger = false;
+  final Function onClick;
 
   PollButton({
     this.childOFF, this.childON, this.colorON = Colors.black, this.colorOFF = Colors.black,
-    this.right = false, this.elevation = 2.0
+    this.right = false, this.elevation = 2.0, this.onClick
   });
 
   @override
@@ -22,12 +21,14 @@ class PollButton extends StatefulWidget {
 
 class _PollButtonState extends State<PollButton> {
   
+    bool _btnTrigger = false;
+
   //the trigger value of the button that determines if it is on or off
 
   //toggles the button
   void toggle(){
     this.setState(() => {
-      this.widget._btnTrigger = !this.widget._btnTrigger
+      _btnTrigger = !_btnTrigger
     });
   }
 
@@ -35,7 +36,7 @@ class _PollButtonState extends State<PollButton> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.widget._btnTrigger = false;
+    _btnTrigger = false;
   }
 
 
@@ -56,19 +57,22 @@ class _PollButtonState extends State<PollButton> {
 
         //actual button     
         child: RawMaterialButton(
-          fillColor: this.widget._btnTrigger? this.widget.colorON : this.widget.colorOFF,
+          fillColor: _btnTrigger? this.widget.colorON : this.widget.colorOFF,
           child: Padding(
             padding: EdgeInsets.only(top: 10, bottom: 10),
-            child: this.widget._btnTrigger? this.widget.childON : this.widget.childOFF,
+            child: _btnTrigger? this.widget.childON : this.widget.childOFF,
           ),
           constraints: BoxConstraints(minWidth: 85, minHeight: 45),
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 2,
-              color: this.widget._btnTrigger? this.widget.colorON : this.widget.colorOFF,
+              color: _btnTrigger? this.widget.colorON : this.widget.colorOFF,
             ),
           ),
-          onPressed: () => toggle()
+          onPressed: () => {
+            toggle(),
+            this.widget.onClick()
+          }
         ),
       ),
     );
