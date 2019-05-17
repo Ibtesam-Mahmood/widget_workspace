@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 ///A Button that can be pressed to toggle on and off
 ///The button is clipped either to the left or the right of the parent widget
@@ -34,7 +33,6 @@ class _PollButtonState extends State<PollButton> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _btnTrigger = false;
   }

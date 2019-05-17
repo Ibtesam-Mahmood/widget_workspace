@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 //A simple slated container that is slanted to the right or left by a defined # of pixels
 class SlantedContainer extends StatelessWidget {
-  double height = 0, width = 0;
-  double left = 0, right = 0;
-  Widget child;
-  Color color;
+  final double height, width;
+  final double left, right;
+  final Widget child;
+  final Color color;
 
-  SlantedContainer({this.height, this.width, this.child, this.left, this.right, this.color});
+  SlantedContainer({this.height = 0, this.width = 0, this.child, this.left = 0, this.right = 0, this.color = Colors.black});
 
   @override
   Widget build(BuildContext context) {
