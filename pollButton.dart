@@ -6,8 +6,15 @@ import 'dart:math';
 class PollButton extends StatefulWidget {
   final Widget childOFF, childON;
   final Color colorON, colorOFF;
+  final bool right;
+  final double elevation;
 
-  PollButton({this.childOFF, this.childON, this.colorON, this.colorOFF});
+  bool _btnTrigger = false;
+
+  PollButton({
+    this.childOFF, this.childON, this.colorON = Colors.black, this.colorOFF = Colors.black,
+    this.right = false, this.elevation = 2.0
+  });
 
   @override
   _PollButtonState createState() => _PollButtonState();
@@ -16,92 +23,144 @@ class PollButton extends StatefulWidget {
 class _PollButtonState extends State<PollButton> {
   
   //the trigger value of the button that determines if it is on or off
-  bool _btnTrigger = false;
 
   //toggles the button
   void toggle(){
-    _btnTrigger = !_btnTrigger;
+    this.setState(() => {
+      this.widget._btnTrigger = !this.widget._btnTrigger
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _btnTrigger = false;
+    this.widget._btnTrigger = false;
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return RawMaterialButton(
-      shape: _PollPaint(
-        colorOFF: this.widget.colorOFF,
+    return CustomPaint(
+
+      //creates the shadow for elevation
+      painter: _ClipShadowShadowPainter(
+        clipper: _PollElevationClipper(this.widget.right),
+        shadow: Shadow(blurRadius: this.widget.elevation),
       ),
-      onPressed: () => print("hi"),
+
+      //button clipper
+      child: ClipPath(
+        clipBehavior: Clip.antiAlias,
+        clipper: _PollClipper(this.widget.right),   
+
+        //actual button     
+        child: RawMaterialButton(
+          fillColor: this.widget._btnTrigger? this.widget.colorON : this.widget.colorOFF,
+          child: Padding(
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            child: this.widget._btnTrigger? this.widget.childON : this.widget.childOFF,
+          ),
+          constraints: BoxConstraints(minWidth: 85, minHeight: 45),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              width: 2,
+              color: this.widget._btnTrigger? this.widget.colorON : this.widget.colorOFF,
+            ),
+          ),
+          onPressed: () => toggle()
+        ),
+      ),
     );
   }
 }
 
-/*
-CustomPaint(
-        child: this.widget.childOFF,
-        painter: _PollPaint(
-          colorOFF: this.widget.colorOFF,
-        ),
-      ),
-*/
+//credits to coman3 github
+//creates the shadow under the button for elevation
+class _ClipShadowShadowPainter extends CustomPainter {
+  final Shadow shadow;
+  final CustomClipper<Path> clipper;
 
-class _PollPaint extends ShapeBorder{
+  _ClipShadowShadowPainter({@required this.shadow, @required this.clipper});
 
-  Color colorOFF = Colors.red, colorON = Colors.green;
-
-  Path _path;
-
-  _PollPaint({this.colorOFF, this.colorON}){
-    _path = Path();
-    _path.moveTo(0, 10);
-    _path.quadraticBezierTo(5, 25, 25, 25);
-    _path.lineTo(50, 25);
-    _path.quadraticBezierTo(80, 25, 80, 45);
-    _path.quadraticBezierTo(80, 65, 50, 65);
-    _path.lineTo(50, 65);
-    _path.lineTo(25, 65);
-    _path.quadraticBezierTo(5, 65, 0, 80);
-    _path.lineTo(0, 0);
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = shadow.toPaint();
+    var clipPath = clipper.getClip(size).shift(shadow.offset);
+    canvas.drawPath(clipPath, paint);
   }
 
   @override
-  // TODO: Bruh what do these even mean
-  EdgeInsetsGeometry get dimensions => null;
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
-    // TODO: Bruh what do these even mean
-    return null;
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    // TODO: Bruh what do these even mean
-    return null;
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-        Paint paint = Paint()
-      ..color = colorOFF
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 5;
-    
-    canvas.drawPath(_path, paint);
-
-  }
-
-  @override
-  ShapeBorder scale(double t) {
-    // TODO: Bruh what do these even mean
-    return null;
-  }
-
-  
 }
+
+//The clipper that defines the elevation clip
+//Sits slightly lowker than the usual clipper
+class _PollElevationClipper extends CustomClipper<Path>{
+
+  bool right;
+
+  _PollElevationClipper([this.right = false]);
+
+  @override
+  Path getClip(Size size) {
+    final double w = size.width, h = size.height;
+    if(right == false)
+      return Path()
+        ..moveTo(w*0.9, h*0.5)
+        ..quadraticBezierTo(w, h*0.83, w*0.8, h*0.8)
+        ..lineTo(w*0.0, h*0.8);
+    else
+      return Path()
+        ..moveTo(w*0.1, h*0.5)
+        ..quadraticBezierTo(0, h*0.83, w*0.2, h*0.8)
+        ..lineTo(w, h*0.8);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
+
+}
+
+//Clipper that defines the shape of the button
+class _PollClipper extends CustomClipper<Path>{
+
+  //determines if the button is right or left orientation
+  bool right;
+
+  _PollClipper([this.right = false]);
+
+  @override
+  Path getClip(Size size) {
+    final double w = size.width, h = size.height;
+    if(right == false)
+      return Path()
+        ..quadraticBezierTo(0, h*0.1, w*0.08, h*0.16)
+        ..lineTo(w*0.8, h*0.16)
+        ..quadraticBezierTo(w, h*0.16, w, h*0.5)
+        ..quadraticBezierTo(w, h*0.83, w*0.8, h*0.83)
+        ..lineTo(w*0.08, h*0.83)
+        ..quadraticBezierTo(0, h*0.89, 0, h)
+        ..close();
+    else
+      return Path()
+        ..moveTo(w, 0)
+        ..quadraticBezierTo(w, h*0.1, w*0.92, h*0.16)
+        ..lineTo(w*0.2, h*0.16)
+        ..quadraticBezierTo(0, h*0.16, 0, h*0.5)
+        ..quadraticBezierTo(0, h*0.83, w*0.2, h*0.83)
+        ..lineTo(w*0.92, h*0.83)
+        ..quadraticBezierTo(w, h*0.89, w, h)
+        ..close();
+      
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
+
+}
+
+
+
