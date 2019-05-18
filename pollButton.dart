@@ -20,7 +20,7 @@ class PollButton extends StatefulWidget {
 
 class _PollButtonState extends State<PollButton> {
   
-    bool _btnTrigger = false;
+  bool _btnTrigger = false;
 
   //the trigger value of the button that determines if it is on or off
 
@@ -69,7 +69,8 @@ class _PollButtonState extends State<PollButton> {
           ),
           onPressed: () => {
             toggle(),
-            this.widget.onClick()
+            if(this.widget.onClick != null)
+              this.widget.onClick()
           }
         ),
       ),

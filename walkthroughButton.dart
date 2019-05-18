@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class Walkthrough extends StatelessWidget {
+class WalkthroughButton extends StatelessWidget {
   final Color color;
   final double elevation;
   final Widget child;
   final bool right;
 
-  Walkthrough(
+  WalkthroughButton(
       {this.color = Colors.blueAccent,
       this.elevation = 8,
       this.child,
