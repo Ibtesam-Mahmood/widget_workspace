@@ -21,7 +21,9 @@ class TitledWidget extends StatelessWidget {
       crossAxisAlignment: this.crossAxisAlignment,
       children: <Widget>[
         Text(text, style: headerStyle,),
-        widget
+        Container(
+          child: this.widget != null? this.widget : null,
+        )
       ],
     );
   }
