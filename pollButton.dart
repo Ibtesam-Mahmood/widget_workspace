@@ -7,11 +7,11 @@ class PollButton extends StatefulWidget {
   final Color colorON, colorOFF;
   final bool right;
   final double elevation;
-  final Function onClick;
+  final Function onPressed;
 
   PollButton({
     this.childOFF, this.childON, this.colorON = Colors.black, this.colorOFF = Colors.black,
-    this.right = false, this.elevation = 2.0, this.onClick
+    this.right = false, this.elevation = 2.0, this.onPressed
   });
 
   @override
@@ -69,8 +69,8 @@ class _PollButtonState extends State<PollButton> {
           ),
           onPressed: () => {
             toggle(),
-            if(this.widget.onClick != null)
-              this.widget.onClick()
+            if(this.widget.onPressed != null)
+              this.widget.onPressed()
           }
         ),
       ),
