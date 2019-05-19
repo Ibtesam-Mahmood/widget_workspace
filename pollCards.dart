@@ -2,6 +2,40 @@ import 'package:flutter/material.dart';
 
 import 'titledWidget.dart';
 
+///The Footer that displays who the post is by
+class PollCardSubmitted extends StatelessWidget {
+  final bool img;
+  final String name;
+
+  const PollCardSubmitted({
+    Key key, this.img = false, this.name = ""
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10, left: 20, right: 20),
+      child: Row(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: this.img ? Container(
+              height: 25,
+              width: 25,
+              child: Image.network("https://scontent.fyyz1-1.fna.fbcdn.net/v/t1.0-9/56184365_2581273798611913_5627952602957217792_n.jpg?_nc_cat=101&_nc_ht=scontent.fyyz1-1.fna&oh=f6b589cfa00da502a992008e195e848b&oe=5D539643")
+            ) : null,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 3),
+            child: Text("Submitted by"),
+          ),
+          Text(this.name, style: TextStyle(fontWeight: FontWeight.bold),)
+        ],
+      ),
+    );
+  }
+}
+
 ///The content that goes into a card
 ///Could be a text or an image/video
 class CardContent extends StatelessWidget {
@@ -15,7 +49,7 @@ class CardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(top: 5.0, bottom: 15.0, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 5.0, bottom: 10.0, left: 20, right: 20),
         child: Column(
           children: <Widget>[
             Text(
