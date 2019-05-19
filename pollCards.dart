@@ -1,6 +1,49 @@
 import 'package:flutter/material.dart';
 
 import 'titledWidget.dart';
+import 'pollButton.dart';
+
+///The footer that holds 2 poll buttons and manages the whole poll in the card
+class PollCardFooter extends StatelessWidget {
+  const PollCardFooter({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
+        children: <Widget>[
+          PollButton(
+            childOFF: Text("Agree"),
+            colorOFF: Colors.yellow,
+            childON: Text("17%"),
+            colorON: Colors.green,
+            elevation: 5,
+          ),
+          Expanded(
+            child: Container(),
+            flex: 1,
+          ),
+          Text("Yolo"),
+          Expanded(
+            child: Container(),
+            flex: 1,
+          ),
+          PollButton(
+            childOFF: Text("Disagree"),
+            colorOFF: Colors.yellow,
+            childON: Text("17%"),
+            colorON: Colors.green,
+            elevation: 5,
+            right: true,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 ///The Footer that displays who the post is by
 class PollCardSubmitted extends StatelessWidget {
