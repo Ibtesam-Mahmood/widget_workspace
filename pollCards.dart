@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'titledWidget.dart';
 
-
+///The content that goes into a card
+///Could be a text or an image/video
 class CardContent extends StatelessWidget {
 
   final String content;
