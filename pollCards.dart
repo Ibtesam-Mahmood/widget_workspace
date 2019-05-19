@@ -3,6 +3,47 @@ import 'package:flutter/material.dart';
 import 'titledWidget.dart';
 import 'pollButton.dart';
 
+///A card that container a poll
+class PollCard extends StatefulWidget {
+  const PollCard({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _PollCardState createState() => _PollCardState();
+}
+
+class _PollCardState extends State<PollCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10)
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          CardHeader(
+            display: Text("H", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30),),
+            title: "History",
+            prop: Text("18 trusts - 14m left"),
+          ),
+          CardContent(
+            content: "Kanye had a point when he said Slavery for 400 years? That sounds like a choice.",
+            img: true,
+          ),
+          PollCardSubmitted(
+            name: "Ibtesam Mahmood",
+            img: true,
+          ),
+          PollCardFooter()
+        ],
+      ),
+    );
+  }
+}
+
 ///The footer that holds 2 poll buttons and manages the whole poll in the card
 class PollCardFooter extends StatelessWidget {
   const PollCardFooter({
