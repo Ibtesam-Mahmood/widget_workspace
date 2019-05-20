@@ -79,7 +79,7 @@ class _PollButtonState extends State<PollButton> {
 }
 
 //credits to coman3 github
-//creates the shadow under the button for elevation
+///creates the shadow under the button for elevation
 class _ClipShadowShadowPainter extends CustomPainter {
   final Shadow shadow;
   final CustomClipper<Path> clipper;
