@@ -73,9 +73,25 @@ class PollCardFooter extends StatelessWidget {
             flex: 1,
           ),
           OverLapingProfiles(img1: true, img2: true),
+          Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: RichText(
+              text: TextSpan(children: <TextSpan>[
+                TextSpan(
+                    text: '10.2K',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18)),
+                TextSpan(
+                    text: ' replies',
+                    style: TextStyle(color: Color(0xFF667180), fontSize: 15))
+              ]),
+            ),
+          ),
           Expanded(
             child: Container(),
-            flex: 1,
+            flex: 2,
           ),
           PollButton(
             childOFF: Text("Disagree"),
