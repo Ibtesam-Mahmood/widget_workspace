@@ -2,10 +2,34 @@ import 'package:flutter/material.dart';
 import 'overLapingProfiles.dart';
 import 'titledWidget.dart';
 import 'pollButton.dart';
+import 'eECard.dart';
+
+class PostCard extends StatefulWidget {
+  @override
+  _PostCardState createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
 
 ///A card that container a poll
 class PollCard extends StatefulWidget {
+  final String logo;
+  final String title;
+  final String headerText;
+  final String main;
+  final String name;
   const PollCard({
+    this.logo = "H",
+    this.title = "History",
+    this.headerText = "18 trusts - 14m left",
+    this.main =
+        "Kanye had a point when he said Slavery for 400 years? That sounds like a choice.",
+    this.name = "Ibtesam Mahmood",
     Key key,
   }) : super(key: key);
 
@@ -16,50 +40,39 @@ class PollCard extends StatefulWidget {
 class _PollCardState extends State<PollCard> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 7.0),
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black38, blurRadius: 3, offset: Offset(0, 2))
-            ]),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CardHeader(
-              display: Text(
-                "H",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30),
-              ),
-              title: "History",
-              prop: Text("18 trusts - 14m left"),
+    return new EECard(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _CardHeader(
+            display: Text(
+              this.widget.logo,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
             ),
-            CardContent(
-              content:
-                  "Kanye had a point when he said Slavery for 400 years? That sounds like a choice.",
-              img: true,
-            ),
-            PollCardSubmitted(
-              name: "Ibtesam Mahmood",
-              img: true,
-            ),
-            PollCardFooter()
-          ],
-        ),
+            title: this.widget.title,
+            prop: Text(this.widget.headerText),
+          ),
+          _CardContent(
+            content: this.widget.main,
+            img: true,
+          ),
+          _PollCardSubmitted(
+            name: this.widget.name,
+            img: true,
+          ),
+          _PollCardFooter()
+        ],
       ),
     );
   }
 }
 
 ///The footer that holds 2 poll buttons and manages the whole poll in the card
-class PollCardFooter extends StatelessWidget {
-  const PollCardFooter({
+class _PollCardFooter extends StatelessWidget {
+  const _PollCardFooter({
     Key key,
   }) : super(key: key);
 
@@ -116,11 +129,11 @@ class PollCardFooter extends StatelessWidget {
 }
 
 ///The Footer that displays who the post is by
-class PollCardSubmitted extends StatelessWidget {
+class _PollCardSubmitted extends StatelessWidget {
   final bool img;
   final String name;
 
-  const PollCardSubmitted({Key key, this.img = false, this.name = ""})
+  const _PollCardSubmitted({Key key, this.img = false, this.name = ""})
       : super(key: key);
 
   @override
@@ -155,11 +168,11 @@ class PollCardSubmitted extends StatelessWidget {
 
 ///The content that goes into a card
 ///Could be a text or an image/video
-class CardContent extends StatelessWidget {
+class _CardContent extends StatelessWidget {
   final String content;
   final bool img;
 
-  CardContent({this.content = "", this.img = false});
+  _CardContent({this.content = "", this.img = false});
 
   @override
   Widget build(BuildContext context) {
@@ -191,12 +204,12 @@ class CardContent extends StatelessWidget {
 }
 
 ///The header that appears on the top of poth the poll card and post card
-class CardHeader extends StatelessWidget {
+class _CardHeader extends StatelessWidget {
   final String title; //the title for the header
   final Widget display; //the display within the round container
   final Widget prop; //the widget the appears under the title
 
-  CardHeader({this.title = "", @required this.display, this.prop});
+  _CardHeader({this.title = "", @required this.display, this.prop});
 
   @override
   Widget build(BuildContext context) {
