@@ -16,34 +16,42 @@ class PollCard extends StatefulWidget {
 class _PollCardState extends State<PollCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          CardHeader(
-            display: Text(
-              "H",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30),
+    return Padding(
+      padding: const EdgeInsets.only(top: 7.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black38, blurRadius: 3, offset: Offset(0, 2))
+            ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CardHeader(
+              display: Text(
+                "H",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30),
+              ),
+              title: "History",
+              prop: Text("18 trusts - 14m left"),
             ),
-            title: "History",
-            prop: Text("18 trusts - 14m left"),
-          ),
-          CardContent(
-            content:
-                "Kanye had a point when he said Slavery for 400 years? That sounds like a choice.",
-            img: true,
-          ),
-          PollCardSubmitted(
-            name: "Ibtesam Mahmood",
-            img: true,
-          ),
-          PollCardFooter()
-        ],
+            CardContent(
+              content:
+                  "Kanye had a point when he said Slavery for 400 years? That sounds like a choice.",
+              img: true,
+            ),
+            PollCardSubmitted(
+              name: "Ibtesam Mahmood",
+              img: true,
+            ),
+            PollCardFooter()
+          ],
+        ),
       ),
     );
   }
