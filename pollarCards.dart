@@ -12,7 +12,21 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return new EECard(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _CardHeader(
+            img:
+                "https://scontent-ort2-1.cdninstagram.com/vp/2467490d769066a1c803efea3f70b864/5D6535D5/t51.2885-19/56529087_326584618044947_2875911316877344768_n.jpg?_nc_ht=scontent-ort2-1.cdninstagram.com",
+            title: "Tammy Hembrow",
+            prop: Text("Travel - 19m",
+                style: TextStyle(color: Color(0xFFA4ADB9))),
+            arrow: false,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -208,8 +222,14 @@ class _CardHeader extends StatelessWidget {
   final String title; //the title for the header
   final Widget display; //the display within the round container
   final Widget prop; //the widget the appears under the title
-
-  _CardHeader({this.title = "", @required this.display, this.prop});
+  final String img;
+  bool arrow;
+  _CardHeader(
+      {this.title = "",
+      @required this.display,
+      this.prop,
+      this.img = "",
+      this.arrow = true});
 
   @override
   Widget build(BuildContext context) {
@@ -224,10 +244,13 @@ class _CardHeader extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                  color: Color(0xFF353B48), shape: BoxShape.circle),
+                  color: Color(0xFF353B48),
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      fit: BoxFit.fill, image: NetworkImage(this.img))),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0),
+              padding: const EdgeInsets.only(left: 10),
               child: TitledWidget(
                 this.title,
                 widget: this.prop,
@@ -239,10 +262,18 @@ class _CardHeader extends StatelessWidget {
               child: Container(),
               flex: 1,
             ),
-            IconButton(
-              icon: Icon(Icons.keyboard_arrow_down, color: Color(0xFF718093)),
-              onPressed: () => {},
-            )
+            // this.arrow == true
+            //     ? IconButton(
+            //         icon: Icon(Icons.keyboard_arrow_down,
+            //             color: Color(0xFF718093)),
+            //         onPressed: () => {},
+            //       )
+            // :
+            PollButton(
+              right: true,
+              colorOFF: Colors.green,
+              colorON: Colors.blueGrey,
+            ),
           ],
         ),
       ),
