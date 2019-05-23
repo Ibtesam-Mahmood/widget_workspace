@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+///Creates a linear percentbar that has many customizable propeties
 class PercentBar extends StatelessWidget {
   final Color backgroundColor, borderColor, progressColor;
   final double borderWidth, borderRadius, height;
