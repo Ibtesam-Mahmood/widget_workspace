@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//Horizontlally scrolling list that animates a scroll to the button clicked
+//TODO: NOT DONE AT ALL
 class ISelctedList extends StatefulWidget {
   @override
   _ISelctedListState createState() => _ISelctedListState();
@@ -7,19 +9,12 @@ class ISelctedList extends StatefulWidget {
 
 class _ISelctedListState extends State<ISelctedList> {
   List<ButtonStyling> catagories = List(5);
-  List<bool> pressed = List(5);
   List<String> names = List(5);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    // pressed[0] = false;
-    // pressed[1] = false;
-    // pressed[2] = false;
-    // pressed[3] = false;
-    // pressed[4] = false;
 
     catagories[0] = new ButtonStyling(onPressed: setClear, key: UniqueKey());
     catagories[1] = new ButtonStyling(onPressed: setClear, key: UniqueKey());

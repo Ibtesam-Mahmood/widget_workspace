@@ -77,6 +77,65 @@ class _PollButtonState extends State<PollButton> {
   }
 }
 
+class InActivePollButton extends StatelessWidget{
+
+  final bool trigger;
+  final Widget childOFF, childON;
+  final Color colorON, colorOFF;
+  final bool right;
+  final double elevation;
+  final Function onPressed;
+
+  InActivePollButton({
+    this.childOFF,
+    this.childON,
+    this.colorON = Colors.black,
+    this.colorOFF = Colors.black,
+    this.right = false,
+    this.elevation = 2.0,
+    this.onPressed,
+    this.trigger = false
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      //creates the shadow for elevation
+      painter: _ClipShadowShadowPainter(
+        clipper: _PollElevationClipper(right),
+        shadow: Shadow(blurRadius: elevation),
+      ),
+
+      //button clipper
+      child: ClipPath(
+        clipBehavior: Clip.antiAlias,
+        clipper: _PollClipper(right),
+
+        //actual button
+        child: RawMaterialButton(
+            fillColor: trigger ? colorON : colorOFF,
+            child: Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              child: trigger ? childON : childOFF,
+            ),
+            constraints: BoxConstraints(minWidth: 85, minHeight: 45),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 2,
+                color: trigger ? colorON : colorOFF,
+              ),
+            ),
+            onPressed: () {
+              if(onPressed != null){
+                onPressed();
+              }
+            }
+          ),
+      ),
+    );
+  }
+}
+
 //credits to coman3 github
 ///creates the shadow under the button for elevation
 class _ClipShadowShadowPainter extends CustomPainter {

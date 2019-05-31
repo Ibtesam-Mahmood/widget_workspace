@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'overLapingProfiles.dart';
 import 'titledWidget.dart';
 import 'pollButton.dart';
 import 'eECard.dart';
+import 'package:bloc/bloc.dart';
+
+//POST CARD
 
 class PostCard extends StatefulWidget {
   @override
@@ -15,6 +19,8 @@ class _PostCardState extends State<PostCard> {
     return Container();
   }
 }
+
+//POLL CARD
 
 ///A card that container a poll
 class PollCard extends StatefulWidget {
@@ -38,42 +44,127 @@ class PollCard extends StatefulWidget {
 }
 
 class _PollCardState extends State<PollCard> {
+
+  //defining the poll footer bloc
+  _PollSelectedBloc _pollSelectedBloc = _PollSelectedBloc();
+
+  @override
+  void dispose() {
+    _pollSelectedBloc.dispose(); //disposes the poll footer bloc on disopse
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new EECard(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          _CardHeader(
-            display: Text(
-              this.widget.logo,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30),
-            ),
-            title: this.widget.title,
-            prop: Text(this.widget.headerText),
+    return BlocBuilder(
+      bloc: _pollSelectedBloc,
+      builder: (BuildContext context, _PollSelectedState state){
+        return EECard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _CardHeader(
+                display: Text(
+                  this.widget.logo,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                ),
+                title: this.widget.title,
+                prop: Text(this.widget.headerText),
+              ),
+              _CardContent(
+                content: this.widget.main,
+                img: true,
+              ),
+              _PollCardSubmitted(
+                name: this.widget.name,
+                img: true,
+              ),
+              _PollCardFooter(
+                pollEvent: state.pollEvent,
+                onleftPressed: (){
+                  setState(() {
+                    _pollSelectedBloc.leftButtonClicked();
+                  });
+                },
+                onRightPressed: (){
+                  setState(() {
+                    _pollSelectedBloc.rightButtonClicked();
+                  });
+                },
+              )
+            ],
           ),
-          _CardContent(
-            content: this.widget.main,
-            img: true,
-          ),
-          _PollCardSubmitted(
-            name: this.widget.name,
-            img: true,
-          ),
-          _PollCardFooter()
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
+//POLL CARD BLOC
+
+enum _PollEvent{ right, left, none }
+
+class _PollSelectedState{
+  _PollEvent pollEvent;
+
+  _PollSelectedState._();
+
+  factory _PollSelectedState.initial() => _PollSelectedState._()..pollEvent = _PollEvent.none;
+}
+
+class _PollSelectedBloc extends Bloc<_PollEvent, _PollSelectedState>{
+  
+  void rightButtonClicked(){
+    if(currentState.pollEvent == _PollEvent.right) dispatch(_PollEvent.none);
+    else dispatch(_PollEvent.right);
+  }
+
+  void leftButtonClicked(){
+    if(currentState.pollEvent == _PollEvent.left) dispatch(_PollEvent.none);
+    else dispatch(_PollEvent.left);
+  }
+
+  @override
+  _PollSelectedState get initialState => _PollSelectedState.initial();
+
+  @override
+  Stream<_PollSelectedState> mapEventToState(_PollEvent event) async* {
+    switch(event){
+      case _PollEvent.left: {
+       yield currentState..pollEvent = _PollEvent.left;
+       break;
+      }
+      case _PollEvent.right: {
+        yield currentState..pollEvent = _PollEvent.right;
+        break;
+      }
+      case _PollEvent.none: {
+        yield currentState..pollEvent = _PollEvent.none;
+        break;
+      }
+
+    }
+
+  }
+  
+}
+
+//POLL/POST CARD COMPONETS
+
 ///The footer that holds 2 poll buttons and manages the whole poll in the card
 class _PollCardFooter extends StatelessWidget {
-  const _PollCardFooter({
+
+  final _PollEvent pollEvent;
+  final Function onleftPressed, onRightPressed;
+
+  _PollCardFooter({
     Key key,
+    this.pollEvent = _PollEvent.none,
+    @required this.onleftPressed,
+    @required this.onRightPressed
   }) : super(key: key);
 
   @override
@@ -82,12 +173,14 @@ class _PollCardFooter extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Row(
         children: <Widget>[
-          PollButton(
+          InActivePollButton(
             childOFF: Text("Agree"),
             colorOFF: Colors.yellow,
             childON: Text("17%"),
             colorON: Colors.green,
             elevation: 5,
+            trigger: pollEvent == _PollEvent.left,
+            onPressed: onleftPressed,
           ),
           Expanded(
             child: Container(),
@@ -114,13 +207,15 @@ class _PollCardFooter extends StatelessWidget {
             child: Container(),
             flex: 2,
           ),
-          PollButton(
+          InActivePollButton(
             childOFF: Text("Disagree"),
             colorOFF: Colors.yellow,
             childON: Text("17%"),
             colorON: Colors.green,
             elevation: 5,
             right: true,
+            trigger: pollEvent == _PollEvent.right,
+            onPressed: onRightPressed,
           ),
         ],
       ),
