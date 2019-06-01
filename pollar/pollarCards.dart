@@ -137,6 +137,8 @@ class _PollCardState extends State<PollCard> with TickerProviderStateMixin{
                   img: true,
                 ),
                 _PollCardFooter(
+                  agree: this.widget.agree,
+                  disagree: this.widget.disagree,
                   pollEvent: state.pollEvent,
                   onleftPressed: (){
                     _PollEvent newEvent;
@@ -283,12 +285,14 @@ class _PollCardFooter extends StatelessWidget {
 
   final _PollEvent pollEvent;
   final Function onleftPressed, onRightPressed;
+  final double agree, disagree;
 
   _PollCardFooter({
     Key key,
     this.pollEvent = _PollEvent.none,
     @required this.onleftPressed,
-    @required this.onRightPressed
+    @required this.onRightPressed,
+    this.agree = 0.5, this.disagree = 0.5,
   }) : super(key: key);
 
   @override
@@ -298,10 +302,10 @@ class _PollCardFooter extends StatelessWidget {
       child: Row(
         children: <Widget>[
           InActivePollButton(
-            childOFF: Text("Agree"),
-            colorOFF: Colors.yellow,
-            childON: Text("17%"),
-            colorON: Colors.green,
+            childOFF: Text(pollEvent == _PollEvent.none? "Agree" : (agree*100).ceil().toString() + "%"),
+            colorOFF: Color(0xFFFDFDFD),
+            childON: Text((agree*100).ceil().toString() + "%", style: TextStyle(color: Colors.white)),
+            colorON: Color(0xFF192A56),
             elevation: 5,
             trigger: pollEvent == _PollEvent.left,
             onPressed: onleftPressed,
@@ -332,10 +336,10 @@ class _PollCardFooter extends StatelessWidget {
             flex: 2,
           ),
           InActivePollButton(
-            childOFF: Text("Disagree"),
-            colorOFF: Colors.yellow,
-            childON: Text("17%"),
-            colorON: Colors.green,
+            childOFF: Text(pollEvent == _PollEvent.none? "Disagree" : (disagree*100).ceil().toString() + "%"),
+            colorOFF: Color(0xFFFDFDFD),
+            childON: Text((disagree*100).ceil().toString() + "%", style: TextStyle(color: Colors.white)),
+            colorON: Color(0xFF192A56),
             elevation: 5,
             right: true,
             trigger: pollEvent == _PollEvent.right,
