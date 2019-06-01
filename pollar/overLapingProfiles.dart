@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OverLapingProfiles extends StatelessWidget {
-  bool img1;
-  bool img2;
+  final bool img1;
+  final bool img2;
   OverLapingProfiles({this.img1 = false, this.img2 = false});
   @override
   Widget build(BuildContext context) {

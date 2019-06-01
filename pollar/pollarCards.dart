@@ -76,7 +76,7 @@ class _PollCardState extends State<PollCard> with TickerProviderStateMixin{
 
     //defines the animation AnimationController for the agree button
     //The animation lasts for 1000ms
-    leftAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    leftAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 350));
 
     //Defines the animation done when the agree button is pressed
     //The bar should build up from 0 - agree %
@@ -89,7 +89,7 @@ class _PollCardState extends State<PollCard> with TickerProviderStateMixin{
 
     //defines the animation AnimationController for the disagree button
     //The animation lasts for 1000ms
-    rightAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    rightAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 350));
 
     //Defines the animation done when the agree button is pressed
     //The bar should build up from 0 - agree %

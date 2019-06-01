@@ -13,7 +13,6 @@ class _ISelctedListState extends State<ISelctedList> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     catagories[0] = new ButtonStyling(onPressed: setClear, key: UniqueKey());
@@ -73,13 +72,11 @@ class _ButtonStylingState extends State<ButtonStyling> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void setState(fn) {
-    // TODO: implement setState
     super.setState(fn);
   }
 
