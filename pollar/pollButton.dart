@@ -169,14 +169,21 @@ class _PollElevationClipper extends CustomClipper<Path> {
     final double w = size.width, h = size.height;
     if (right == false)
       return Path()
-        ..moveTo(w * 0.9, h * 0.5)
-        ..quadraticBezierTo(w, h * 0.83, w * 0.8, h * 0.8)
-        ..lineTo(w * 0.0, h * 0.8);
+        ..quadraticBezierTo(0, h * 0.1, w * 0.05, h * 0.28)
+        ..lineTo(w*0.7, h*0.28)
+        ..quadraticBezierTo(w * 0.9, h * 0.25, w * 0.97, h * 0.5)
+        ..quadraticBezierTo(w*0.95, h * 0.83, w * 0.8, h * 0.78)
+        ..lineTo(w * 0.08, h * 0.78)
+        ..quadraticBezierTo(0, h * 0.85, 0, h);
     else
       return Path()
-        ..moveTo(w * 0.1, h * 0.5)
-        ..quadraticBezierTo(0, h * 0.83, w * 0.2, h * 0.8)
-        ..lineTo(w, h * 0.8);
+        ..moveTo(w, 0)
+        ..quadraticBezierTo(w, h * 0.1, w * 0.95, h * 0.28)
+        ..lineTo(w * 0.3, h * 0.28)
+        ..quadraticBezierTo(w*0.1, h * 0.25, w*0.03, h * 0.5)
+        ..quadraticBezierTo(w*0.05, h * 0.83, w * 0.2, h * 0.78)
+        ..lineTo(w * 0.92, h * 0.78)
+        ..quadraticBezierTo(w, h * 0.85, w, h);
   }
 
   @override
