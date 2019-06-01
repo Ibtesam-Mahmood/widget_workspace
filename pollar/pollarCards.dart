@@ -29,7 +29,15 @@ class PollCard extends StatefulWidget {
   final String headerText;
   final String main;
   final String name;
+
+  final double agree, disagree;
+
+  final Color barColor;
+
   const PollCard({
+    this.barColor = const Color(0xFF192A56),
+    this.agree = 0.3,
+    this.disagree = 0.7,
     this.logo = "H",
     this.title = "History",
     this.headerText = "18 trusts - 14m left",
@@ -43,10 +51,16 @@ class PollCard extends StatefulWidget {
   _PollCardState createState() => _PollCardState();
 }
 
-class _PollCardState extends State<PollCard> {
+class _PollCardState extends State<PollCard> with TickerProviderStateMixin{
 
   //defining the poll footer bloc
   _PollSelectedBloc _pollSelectedBloc = _PollSelectedBloc();
+
+  //Defining the animations for the pollbar
+  Animation<double> leftAnimate;
+  Animation<double> rightAnimate;
+  AnimationController leftAnimationController;
+  AnimationController rightAnimationController;
 
   @override
   void dispose() {
@@ -55,52 +69,156 @@ class _PollCardState extends State<PollCard> {
   }
 
   @override
+  void initState() {
+    //throws an error if the disagree and agree % on the poll card do not add up to 100%
+    if(this.widget.agree + this.widget.disagree != 1.0) throw("The poll in the poll card adds up to greater than 100%");
+    super.initState();
+
+    //defines the animation AnimationController for the agree button
+    //The animation lasts for 1000ms
+    leftAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+
+    //Defines the animation done when the agree button is pressed
+    //The bar should build up from 0 - agree %
+    leftAnimate = Tween<double>(begin: 0.0, end: this.widget.agree).animate(leftAnimationController);
+
+    //sets the state of the widget of each itteration of the animation
+    leftAnimate.addListener((){
+      setState(() {});
+    });
+
+    //defines the animation AnimationController for the disagree button
+    //The animation lasts for 1000ms
+    rightAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+
+    //Defines the animation done when the agree button is pressed
+    //The bar should build up from 0 - agree %
+    rightAnimate = Tween<double>(begin: 0.0, end: this.widget.disagree).animate(rightAnimationController);
+
+    //sets the state of the widget of each itteration of the animation
+    rightAnimate.addListener((){
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder(
       bloc: _pollSelectedBloc,
       builder: (BuildContext context, _PollSelectedState state){
-        return EECard(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _CardHeader(
-                display: Text(
-                  this.widget.logo,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30),
+        return CustomPaint(
+          painter: _PollPainter(
+            state.pollEvent,
+            leftAnimate.value,
+            rightAnimate.value,
+            color: this.widget.barColor
+          ),
+          child: EECard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                _CardHeader(
+                  display: Text(
+                    this.widget.logo,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  ),
+                  title: this.widget.title,
+                  prop: Text(this.widget.headerText),
                 ),
-                title: this.widget.title,
-                prop: Text(this.widget.headerText),
-              ),
-              _CardContent(
-                content: this.widget.main,
-                img: true,
-              ),
-              _PollCardSubmitted(
-                name: this.widget.name,
-                img: true,
-              ),
-              _PollCardFooter(
-                pollEvent: state.pollEvent,
-                onleftPressed: (){
-                  setState(() {
-                    _pollSelectedBloc.leftButtonClicked();
-                  });
-                },
-                onRightPressed: (){
-                  setState(() {
-                    _pollSelectedBloc.rightButtonClicked();
-                  });
-                },
-              )
-            ],
+                _CardContent(
+                  content: this.widget.main,
+                  img: true,
+                ),
+                _PollCardSubmitted(
+                  name: this.widget.name,
+                  img: true,
+                ),
+                _PollCardFooter(
+                  pollEvent: state.pollEvent,
+                  onleftPressed: (){
+                    _PollEvent newEvent;
+                    setState(() {
+                      newEvent = _pollSelectedBloc.leftButtonClicked();
+                    });
+                    if(newEvent == _PollEvent.left)
+                      leftAnimationController.forward();
+                    else
+                      leftAnimationController.reset();
+                    rightAnimationController.reset();
+                  },
+                  onRightPressed: (){
+                    _PollEvent newEvent;
+                    setState(() {
+                      newEvent = _pollSelectedBloc.rightButtonClicked();
+                    });
+                    if(newEvent == _PollEvent.right)
+                      rightAnimationController.forward();
+                    else
+                      rightAnimationController.reset();
+                    leftAnimationController.reset();
+                  },
+                )
+              ],
+            ),
           ),
         );
       },
     );
   }
+}
+
+///Takes the current state of the polling.
+///draws a poll bar underneath the poll card to represent %.
+///Takes a left and right % to define the polling percentages for each side (0.0-1.0)
+class _PollPainter extends CustomPainter{
+
+  final _PollEvent pollEvent;
+  final double left, right;
+  final Color color;
+
+  _PollPainter(this.pollEvent, this.left, this.right, {this.color = Colors.blue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint barPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    
+    if(pollEvent == _PollEvent.left){
+      canvas.drawRect(
+        Rect.fromLTWH(0, size.height * 0.97, (size.width * left), 40), 
+        barPaint
+      );
+
+      canvas.drawCircle(Offset((size.width * left), size.height * 1.008), 5, barPaint);
+    }
+    else if(pollEvent == _PollEvent.right){
+      canvas.drawRect(
+        Rect.fromLTWH((size.width * (1-right)), size.height * 0.97, (size.width * right), 40), 
+        barPaint
+      );
+
+      canvas.drawCircle(Offset((size.width * (1-right)), size.height * 1.008), 5, barPaint);
+    }
+    else{
+      canvas.drawRect(
+        Rect.fromLTWH(0, size.height * 0.97, size.width, 40), 
+        barPaint
+      );
+    }
+    
+  }
+
+  @override
+  bool shouldRepaint(_PollPainter oldDelegate) {
+    // return pollEvent != oldDelegate.pollEvent;
+    return true;
+  }
+
 }
 
 //POLL CARD BLOC
@@ -117,14 +235,20 @@ class _PollSelectedState{
 
 class _PollSelectedBloc extends Bloc<_PollEvent, _PollSelectedState>{
   
-  void rightButtonClicked(){
-    if(currentState.pollEvent == _PollEvent.right) dispatch(_PollEvent.none);
-    else dispatch(_PollEvent.right);
+  _PollEvent rightButtonClicked(){
+    _PollEvent newEvent;
+    if(currentState.pollEvent == _PollEvent.right) newEvent = _PollEvent.none;
+    else newEvent = _PollEvent.right;
+    dispatch(newEvent);
+    return newEvent;
   }
 
-  void leftButtonClicked(){
-    if(currentState.pollEvent == _PollEvent.left) dispatch(_PollEvent.none);
-    else dispatch(_PollEvent.left);
+  _PollEvent leftButtonClicked(){
+    _PollEvent newEvent;
+    if(currentState.pollEvent == _PollEvent.left) newEvent = _PollEvent.none;
+    else newEvent = _PollEvent.left;
+    dispatch(newEvent);
+    return newEvent;
   }
 
   @override
