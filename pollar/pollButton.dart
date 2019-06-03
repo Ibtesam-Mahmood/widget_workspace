@@ -9,14 +9,15 @@ class PollButton extends StatefulWidget {
   final double elevation;
   final Function onPressed;
 
-  PollButton(
-      {this.childOFF,
+  PollButton({
+      this.childOFF,
       this.childON,
       this.colorON = Colors.black,
       this.colorOFF = Colors.black,
       this.right = false,
       this.elevation = 2.0,
-      this.onPressed});
+      @required this.onPressed
+    });
 
   @override
   _PollButtonState createState() => _PollButtonState();
@@ -66,12 +67,11 @@ class _PollButtonState extends State<PollButton> {
                 color: _btnTrigger ? this.widget.colorON : this.widget.colorOFF,
               ),
             ),
-            onPressed: () => {
-                  toggle(),
-                  this.widget.onPressed != null
-                      ? this.widget.onPressed()
-                      : null,
-                }),
+            onPressed: () {
+              toggle();
+              this.widget.onPressed();
+            }
+          ),
       ),
     );
   }
@@ -93,7 +93,7 @@ class InActivePollButton extends StatelessWidget{
     this.colorOFF = Colors.black,
     this.right = false,
     this.elevation = 2.0,
-    this.onPressed,
+    @required this.onPressed,
     this.trigger = false
   });
 
@@ -125,11 +125,7 @@ class InActivePollButton extends StatelessWidget{
                 color: trigger ? colorON : colorOFF,
               ),
             ),
-            onPressed: () {
-              if(onPressed != null){
-                onPressed();
-              }
-            }
+            onPressed: onPressed
           ),
       ),
     );

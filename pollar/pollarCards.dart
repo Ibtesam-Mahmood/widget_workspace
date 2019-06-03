@@ -6,21 +6,262 @@ import 'pollButton.dart';
 import 'eECard.dart';
 import 'package:bloc/bloc.dart';
 
-//POST CARD
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POST CARD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+///The card that is shown for posts
+///Takes the key for the scaffold it is used within
 class PostCard extends StatefulWidget {
+
+
+  PostCard();
+
   @override
   _PostCardState createState() => _PostCardState();
 }
 
+//TODO: Set profile picture, check in image scales, icons for bottomsheet
 class _PostCardState extends State<PostCard> {
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return EECard(
+      child: Column(
+        children: <Widget>[
+          _CardHeader(
+            display: Text(
+              "H",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            ),
+            title: "Tammy Hembrow",
+            prop: Text("Travel - 19m"),
+            action: PollButton(
+              elevation: 4,
+              childON: Text("Trusting", style: TextStyle(color: Colors.white),),
+              childOFF: Text("Trust"),
+              colorOFF: Color(0xFFFDFDFD),
+              colorON: Color(0xFF192A56),
+              right: true,
+              onPressed: (){},
+            )
+          ),
+          _CardContent(
+            img: true,
+            content: "Missing the Bora sun 🥥🌺",
+          ),
+          _PostCardLikes(),
+          _PostCardFooter(
+            likeCallBack: (liked){
+
+            },
+            detailsCallBack: (){
+              
+            },
+          )
+        ],
+      ),
+    );
   }
 }
 
-//POLL CARD
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POST card components~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _PostCardFooter extends StatefulWidget {
+  ///The function that runs after a like is pressed takes a parameter for the liked value
+  final Function likeCallBack;
+
+  ///The function that runs after the details button is pressed
+  final Function detailsCallBack;
+
+  const _PostCardFooter({
+    Key key,
+    @required this.likeCallBack, @required this.detailsCallBack
+  }) : super(key: key);
+
+  @override
+  __PostCardFooterState createState() => __PostCardFooterState();
+}
+
+class __PostCardFooterState extends State<_PostCardFooter> {
+
+  bool liked;
+  bool detailsOpen;
+
+  @override
+  void initState() {
+    super.initState();
+    liked = false;
+    detailsOpen = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 3.0, left: 5, right: 10),
+      child: Row(
+        children: <Widget>[
+          IconButton(
+            //TODO: Change icons for buttons
+            icon: Icon(Icons.message, color: Color(0xFF718093),),
+            onPressed: (){
+
+            },
+          ),
+          Expanded(
+            flex: 1,
+            child: TextField(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Send a message...'
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                color: liked? Colors.green : Colors.white,
+                border: liked? null : Border.all(width: 2.5, color: Color(0xFF718093),)
+              ),
+              child: Icon(Icons.check, color: liked? Colors.white : Color(0xFF718093),)
+            ),
+            onPressed: (){
+              setState(() {
+                liked = !liked;
+                this.widget.likeCallBack(liked);
+              });
+            },
+          ),
+          IconButton(
+            icon: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                border: Border.all(
+                  color: Color(0xFF718093),
+                  width: 2.5
+                )
+              ),
+              child: Icon(detailsOpen == true? Icons.arrow_drop_up : Icons.arrow_drop_down, color: Color(0xFF718093))
+            ),
+            onPressed: (){
+              if(!detailsOpen){
+                Future<void> awaitModelSheet = showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context){
+                    return Container(
+                      color: Color(0xFF0737373),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          )
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              leading: Icon(Icons.share),
+                              title: Text("Share post"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.person),
+                              title: Text("Unfollow Tammy Hembrow"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.cancel),
+                              title: Text("Block Tammy Hembrow"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.flag),
+                              title: Text("Report post"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                );
+                setState(() {
+                  detailsOpen = true;
+                  this.widget.detailsCallBack();
+                });
+                awaitModelSheet.then((void val){
+                  setState(() {
+                    detailsOpen = false;
+                  });
+                });
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//TODO: add gesture detector
+class _PostCardLikes extends StatelessWidget {
+
+  
+  const _PostCardLikes({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2.0),
+      child: Row(
+        children: <Widget>[
+          OverLapingProfiles(
+            img1: true,
+            img2: true,
+          ),
+          RichText(
+            text: TextSpan(children: <TextSpan>[
+              TextSpan(
+                  text: ' 3,007',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18)),
+              TextSpan(
+                  text: ' trusts',
+                  style: TextStyle(color: Color(0xFF667180), fontSize: 15))
+            ]),
+          ),
+          OverLapingProfiles(
+            img1: true,
+            img2: true,
+          ),
+          RichText(
+            text: TextSpan(children: <TextSpan>[
+              TextSpan(
+                  text: ' 6,048',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18)),
+              TextSpan(
+                  text: ' likes',
+                  style: TextStyle(color: Color(0xFF667180), fontSize: 15))
+            ]),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POLL CARD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ///A card that container a poll
 class PollCard extends StatefulWidget {
@@ -127,6 +368,13 @@ class _PollCardState extends State<PollCard> with TickerProviderStateMixin{
                   ),
                   title: this.widget.title,
                   prop: Text(this.widget.headerText),
+                  action: IconButton(
+                    icon: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Icon(Icons.keyboard_arrow_down, color: Color(0xFF718093)),
+                    ),
+                    onPressed: () => {},
+                  ),
                 ),
                 _CardContent(
                   content: this.widget.main,
@@ -223,7 +471,7 @@ class _PollPainter extends CustomPainter{
 
 }
 
-//POLL CARD BLOC
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POLL CARD BLOC~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 enum _PollEvent{ right, left, none }
 
@@ -278,7 +526,7 @@ class _PollSelectedBloc extends Bloc<_PollEvent, _PollSelectedState>{
   
 }
 
-//POLL/POST CARD COMPONETS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POLL CARD COMPONETS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ///The footer that holds 2 poll buttons and manages the whole poll in the card
 class _PollCardFooter extends StatelessWidget {
@@ -306,7 +554,7 @@ class _PollCardFooter extends StatelessWidget {
             colorOFF: Color(0xFFFDFDFD),
             childON: Text((agree*100).ceil().toString() + "%", style: TextStyle(color: Colors.white)),
             colorON: Color(0xFF192A56),
-            elevation: 5,
+            elevation: 4,
             trigger: pollEvent == _PollEvent.left,
             onPressed: onleftPressed,
           ),
@@ -340,7 +588,7 @@ class _PollCardFooter extends StatelessWidget {
             colorOFF: Color(0xFFFDFDFD),
             childON: Text((disagree*100).ceil().toString() + "%", style: TextStyle(color: Colors.white)),
             colorON: Color(0xFF192A56),
-            elevation: 5,
+            elevation: 4,
             right: true,
             trigger: pollEvent == _PollEvent.right,
             onPressed: onRightPressed,
@@ -389,6 +637,8 @@ class _PollCardSubmitted extends StatelessWidget {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POLL/POST card components~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ///The content that goes into a card
 ///Could be a text or an image/video
 class _CardContent extends StatelessWidget {
@@ -404,13 +654,14 @@ class _CardContent extends StatelessWidget {
         padding:
             const EdgeInsets.only(top: 5.0, bottom: 10.0, left: 20, right: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               this.content,
               style: TextStyle(fontSize: 19),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 9),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: img
@@ -431,14 +682,15 @@ class _CardHeader extends StatelessWidget {
   final String title; //the title for the header
   final Widget display; //the display within the round container
   final Widget prop; //the widget the appears under the title
+  final Widget action; //the widget that appears to the right of the header
 
-  _CardHeader({this.title = "", @required this.display, this.prop});
+  _CardHeader({this.title = "", @required this.display, this.prop, this.action});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(top: 10.0, left: 10.0, bottom: 10.0),
         child: Row(
           children: <Widget>[
             Container(
@@ -462,10 +714,7 @@ class _CardHeader extends StatelessWidget {
               child: Container(),
               flex: 1,
             ),
-            IconButton(
-              icon: Icon(Icons.keyboard_arrow_down, color: Color(0xFF718093)),
-              onPressed: () => {},
-            )
+            Container(child: action)
           ],
         ),
       ),
