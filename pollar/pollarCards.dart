@@ -5,6 +5,7 @@ import 'titledWidget.dart';
 import 'pollButton.dart';
 import 'eECard.dart';
 import 'package:bloc/bloc.dart';
+import 'sendMessageSheet.dart';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~POST CARD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -89,6 +90,52 @@ class __PostCardFooterState extends State<_PostCardFooter> {
   bool liked;
   bool detailsOpen;
 
+  void showDetailsSheet(){
+    Future<void> awaitModelSheet = showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context){
+        return Container(
+          color: Color(0xFF0737373),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              )
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.share),
+                  title: Text("Share post"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text("Unfollow Tammy Hembrow"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.cancel),
+                  title: Text("Block Tammy Hembrow"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.flag),
+                  title: Text("Report post"),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+    awaitModelSheet.then((void val){
+      setState(() {
+        detailsOpen = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,16 +153,26 @@ class __PostCardFooterState extends State<_PostCardFooter> {
             //TODO: Change icons for buttons
             icon: Icon(Icons.message, color: Color(0xFF718093),),
             onPressed: (){
-
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context){
+                  return MessageSheet();
+                }
+              );
             },
           ),
           Expanded(
             flex: 1,
-            child: TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Send a message...'
-              ),
+            child: GestureDetector(
+              child: Text("Send Message..."),
+              onTap: (){
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context){
+                    return MessageSheet();
+                  }
+                );
+              },
             ),
           ),
           IconButton(
@@ -151,53 +208,11 @@ class __PostCardFooterState extends State<_PostCardFooter> {
             ),
             onPressed: (){
               if(!detailsOpen){
-                Future<void> awaitModelSheet = showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context){
-                    return Container(
-                      color: Color(0xFF0737373),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          )
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: Icon(Icons.share),
-                              title: Text("Share post"),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.person),
-                              title: Text("Unfollow Tammy Hembrow"),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.cancel),
-                              title: Text("Block Tammy Hembrow"),
-                            ),
-                            ListTile(
-                              leading: Icon(Icons.flag),
-                              title: Text("Report post"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                );
                 setState(() {
                   detailsOpen = true;
                   this.widget.detailsCallBack();
                 });
-                awaitModelSheet.then((void val){
-                  setState(() {
-                    detailsOpen = false;
-                  });
-                });
+                showDetailsSheet();
               }
             },
           ),
