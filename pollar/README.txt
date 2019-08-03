@@ -2,3 +2,4 @@ The following files contained are the widgets for pollar along with their depend
 
 Install Dependacies:
   flutter_bloc
+  Tuple
